@@ -2,6 +2,9 @@ name: my-pipeline
 
 on:
   push:
+ 
+env:
+  SAM_TEMPLATE: template.yaml
 
 jobs:
   test:
@@ -11,3 +14,13 @@ jobs:
       - uses: actions/setup-python@v2
       - run: pip install -r tests/requirements.txt
       - run: python -m pytest tests/unit -v
+  build-and-package:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: aws-actions/setup-sam@v1
+
+      - name: Build resources
+        run: sam build --template ${SAM_TEMPLATE} --use-container
