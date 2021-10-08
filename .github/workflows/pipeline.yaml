@@ -7,6 +7,7 @@ env:
   SAM_TEMPLATE: template.yaml
   TESTING_REGION: us-west-2
   TESTING_ROLE_ARN: arn:aws:iam::829297927853:role/GH-Roles-Role-CU27R26U69GE
+  TESTING_ARTIFACTS_BUCKET: gh-roles-sambucket-fzgzmb5aghkd
 
 jobs:
   test:
@@ -36,3 +37,15 @@ jobs:
         with:
           aws-region: ${{ env.TESTING_REGION }}
           role-to-assume: ${{ env.TESTING_ROLE_ARN }}
+
+      - name: Upload artifacts to testing artifact buckets
+        run: |
+          sam package \
+            --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
+            --region ${TESTING_REGION} \
+            --output-template-file packaged-testing.yaml
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: packaged-testing.yaml
+          path: packaged-testing.yaml

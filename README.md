@@ -10,3 +10,5 @@ aws cloudformation deploy \
   --region us-west-2
 
 aws cloudformation describe-stacks --stack-name GH-Roles --output text --query "Stacks[?StackName=='$STACKNAME'][].Outputs[?OutputKey=='Role'].OutputValue"
+
+aws cloudformation describe-stacks --stack-name GH-Roles --output text --query "Stacks[?StackName=='$STACKNAME'][].Outputs[?OutputKey=='BucketName'].OutputValue"
